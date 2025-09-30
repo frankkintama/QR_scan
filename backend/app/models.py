@@ -1,19 +1,25 @@
-from beanie import Document
-from fastapi_users.db import BeanieBaseUser
+from beanie import Document, PydanticObjectId
+from fastapi_users_db_beanie import BeanieBaseUser
 from fastapi_users import schemas
-import uuid
 
-# Database model
 class User(BeanieBaseUser, Document):
-    id: uuid.UUID
-    pass
+    class Settings:
+        name = "User"
+        email_collation = None
 
 # Pydantic models
-class UserRead(schemas.BaseUser[uuid.UUID]):
+# BaseUser[uuid.UUID]:
+# id(UUID), email(str)
+# is_active(bool), is_superuser(bool), is_verified(bool)
+class UserRead(schemas.BaseUser[PydanticObjectId]):
     pass
 
+# BaseUserCreate:
+# email(str), password(str)
 class UserCreate(schemas.BaseUserCreate):
     pass
 
+# BaseUserUpdate
+# email: Optional(str), password: Optional(str)
 class UserUpdate(schemas.BaseUserUpdate):
     pass

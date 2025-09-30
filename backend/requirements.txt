@@ -1,6 +1,6 @@
-fastapi
-uvicorn[standard]
+fastapi>=0.111.0
+uvicorn[standard]>=0.30.0
 python-dotenv
-motor
-beanie
-fastapi-users[beanie]
+motor>=3.3.0
+beanie>=1.26.0
+fastapi-users[beanie]>=13.0.0
