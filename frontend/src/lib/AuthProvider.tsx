@@ -2,7 +2,6 @@ import { createContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"
-console.log("Backend URL:", BACKEND_URL)
 
 // Interface định nghĩa cấu trúc User
 interface User {
@@ -31,27 +30,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Function lấy thông tin user hiện tại từ backend
   const fetchCurrentUser = async () => {
-    console.log("Fetching current user...");
+    
     try {
       const res = await fetch(`${BACKEND_URL}/users/me`, {
         method: "GET",
         credentials: "include",  // Gửi COOKIE
       });
 
-      console.log("/users/me status:", res.status);
-
       if (res.ok) {  // Status 200-299
         const data = await res.json();
-        console.log("User data:", data);
+        
         setUser(data);  // Lưu user vào state
       } else {  // 401 Unauthorized hoặc lỗi khác
-        console.log("Failed to fetch user");
+        
         setUser(null);  // Không có user
       }
+      
     } catch (error) {  // Network error
       console.error("Error fetching user:", error);
+      
       setUser(null);
     } finally {
+      
       setLoading(false);  // Dừng loading dù thành công hay thất bại
     }
   };
@@ -65,7 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
   const login = async (username: string, password: string) => {
-    console.log("Login attempt for:", username);
 
     // Tạo form data theo chuẩn OAuth2
     const formData = new URLSearchParams();
@@ -79,7 +78,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: formData,
     });
 
-    console.log("Login response:", res.status);
 
     if (!res.ok) {  // Login thất bại
       const errorData = await res.json().catch(() => ({}));
@@ -88,9 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     
     // Login thành công (status 204)
-    console.log("Login successful, fetching user...");
     await fetchCurrentUser();  // Lấy thông tin user và lưu vào state
-    console.log("Current user state:", user);  
   };
 
   
@@ -100,7 +96,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         method: "POST",
         credentials: "include",
       });
-      console.log("Logout response:", res.status);
     } catch (error) {
       console.error("Error logging out:", error);
     } finally {
