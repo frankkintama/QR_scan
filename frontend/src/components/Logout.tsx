@@ -1,4 +1,3 @@
-// src/components/Logout.tsx
 import { useAuth } from "../lib/useAuth";
 import { useNavigate } from "react-router-dom";
 
@@ -20,4 +19,5 @@ export default function Logout() {
     </button>
   );
 }
+
 
