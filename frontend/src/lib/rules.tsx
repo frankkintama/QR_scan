@@ -11,7 +11,7 @@ const passwordRules = z
   .trim();
 
 export const LoginFormSchema = z.object({
-  email: z.string().email("Vui lòng nhập email hợp lệ."),
+  username: z.string().min(4, "Vui lòng nhập email hợp lệ."),
   password: passwordRules,
 });
 
