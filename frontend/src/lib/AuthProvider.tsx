@@ -15,8 +15,8 @@ interface AuthContextType {
   user: User | null;           //null nếu chưa login
   isLoggedIn: boolean;         
   login: (username: string, password: string) => Promise<void>; 
+  logout: () => Promise<void>;
 }
-
 
 // Tạo Context - nơi lưu trữ authentication state
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -89,9 +89,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log("Current user state:", user);  
   };
 
+  const logout = async () => {
+    try {
+       const res = await fetch(`${BACKEND_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      console.log("Logout response:", res.status);
+    } catch (error) {
+      console.error("Error logging out:", error);
+    } finally {
+      setUser(null);  // reset state
+    }
+  };
+
+
   // Render Provider với value chứa state và functions
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn: !!user, login }}>
+    <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout }}>
       {!loading && children}  {/* Chỉ render children khi đã kiểm tra xong auth status */}
     </AuthContext.Provider>
   );
