@@ -1,4 +1,3 @@
-// src/lib/rules.ts
 import { z } from "zod";
 
 const passwordRules = z
@@ -11,7 +10,10 @@ const passwordRules = z
   .trim();
 
 export const LoginFormSchema = z.object({
-  username: z.string().min(4, "Vui lòng nhập username hợp lệ."),
+  username: z.string()
+    .min(4, {message: "Tên phải có ít nhất 4 kí tự."})
+    .max(20, {message: "Tên không được dài quá 20 kí tự."}),
+  
   password: passwordRules,
 });
 
