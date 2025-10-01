@@ -10,6 +10,7 @@ interface User {
   username: string
 }
 
+
 // Interface định nghĩa những gì Context cung cấp cho components
 interface AuthContextType {
   user: User | null;           //null nếu chưa login
@@ -18,8 +19,10 @@ interface AuthContextType {
   logout: () => Promise<void>;
 }
 
+
 // Tạo Context - nơi lưu trữ authentication state
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
 
 // Provider component - wrap toàn bộ app để chia sẻ auth state
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -53,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  
   // useEffect chạy 1 lần khi component mount
   // Kiểm tra xem user đã login chưa (có cookie hay không)
   useEffect(() => {
@@ -89,6 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log("Current user state:", user);  
   };
 
+  
   const logout = async () => {
     try {
        const res = await fetch(`${BACKEND_URL}/auth/logout`, {
