@@ -174,10 +174,3 @@ async def get_me(user: User = Depends(current_user)):
     """Get current authenticated user"""
     return user
 
-# Debug endpoint - kiểm tra cookies
-@app.get("/debug/request")
-async def debug_request(request: Request):
-    return {
-        "cookies": dict(request.cookies),
-        "cookie_header": request.headers.get("cookie")
-    }
