@@ -12,7 +12,7 @@ const Dashboard: React.FC = () => {
     <div style={{ maxWidth: "500px", margin: "2rem auto" }}>
       <h1>Dashboard</h1>
       {user ? (
-        <p>Welcome, {user.email} 👋</p>
+        <p>Welcome, {user.username} 👋</p>
       ) : (
         <p>User not found</p>
       )}

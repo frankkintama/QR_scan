@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request, Depends
 from fastapi_users import FastAPIUsers, BaseUserManager
 from fastapi_users.authentication import CookieTransport, AuthenticationBackend, JWTStrategy
 from fastapi_users_db_beanie import BeanieUserDatabase
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 
 from beanie import init_beanie, PydanticObjectId
@@ -27,6 +28,29 @@ class UserManager(BaseUserManager[User, PydanticObjectId]):
 
     def parse_id(self, user_id: str) -> PydanticObjectId:
         return PydanticObjectId(ObjectId(user_id))
+
+    async def authenticate(
+        self, credentials: OAuth2PasswordRequestForm
+    ) -> Optional[User]:
+        user = await self.user_db.get_by_email(credentials.username)
+        if user is None:
+            # Try to find by username if email lookup fails
+            user = await User.find_one(User.username == credentials.username)
+        
+        if user is None:
+            self.password_helper.hash(credentials.password)
+            return None
+
+        verified, updated_password_hash = self.password_helper.verify_and_update(
+            credentials.password, user.hashed_password
+        )
+        if not verified:
+            return None
+        
+        if updated_password_hash is not None:
+            await self.user_db.update(user, {"hashed_password": updated_password_hash})
+
+        return user
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")

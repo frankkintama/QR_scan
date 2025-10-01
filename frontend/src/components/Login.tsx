@@ -23,13 +23,13 @@ function Login() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data.email, data.password);
+      await login(data.username, data.password);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
       setError("password", {
         type: "manual",
-        message: "Email hoặc mật khẩu không hợp lệ",
+        message: "Tên hoặc mật khẩu không hợp lệ",
       });
     }
   };
@@ -39,12 +39,12 @@ function Login() {
       <h2>Form Đăng Nhập</h2>
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <input 
-          type="email" 
-          {...register("email")} 
-          placeholder="Email" />
-        {errors.email && (
+          type="text" 
+          {...register("username")} 
+          placeholder="Username" />
+        {errors.username && (
           <span className="error">
-            {errors.email.message}
+            {errors.username.message}
           </span>
         )}
 

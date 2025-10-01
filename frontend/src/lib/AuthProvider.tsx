@@ -7,13 +7,13 @@ console.log("Backend URL:", BACKEND_URL)
 
 interface User {
   id: string;
-  email: string
+  username: string
 }
 
 interface AuthContextType {
   user: User | null;
   isLoggedIn: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
 }
 
 
@@ -54,12 +54,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchCurrentUser();
   }, []);
 
- /*lấy email và password từ login, gọi request tới backend*/
- const login = async (email: string, password: string) => {
-    console.log("Login attempt for:", email); // Add
+ /*lấy username và password từ login, gọi request tới backend*/
+ const login = async (username: string, password: string) => {
+    console.log("Login attempt for:", username); // Add
 
     const formData = new URLSearchParams();
-    formData.append("username", email);
+    formData.append("username", username);
     formData.append("password", password);
 
     const res = await fetch(`${BACKEND_URL}/auth/login`, {
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        const errorMessage = errorData.detail || "Invalid email or password";
+        const errorMessage = errorData.detail || "Invalid username or password";
         throw new Error(errorMessage);
     }
     console.log("Login successful, fetching user..."); // Add
