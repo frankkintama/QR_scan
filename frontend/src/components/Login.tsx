@@ -61,7 +61,6 @@ function Login() {
         <input
           type="submit"
           value={isSubmitting ? "Logging in..." : "Đăng nhập"}
-          style={{ backgroundColor: "#a1eafb" }}
           disabled={isSubmitting}
           className="button"
         />
