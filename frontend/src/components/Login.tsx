@@ -29,7 +29,7 @@ function Login() {
       console.error(err);
       setError("password", {
         type: "manual",
-        message: "Tên hoặc mật khẩu không hợp lệ",
+        message: (err as Error).message,
       });
     }
   };
