@@ -14,9 +14,10 @@ export default function Logout() {
   return (
     <button
       onClick={handleLogout}
-      value="Đăng xuất"
       className="button"
     >
+        Đăng xuất
     </button>
   );
 }
+
