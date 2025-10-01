@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Logout from "../components/Logout"
 import { useAuth } from "../lib/useAuth";
 import { useNavigate } from "react-router-dom";
 
@@ -12,14 +13,15 @@ const Dashboard: React.FC = () => {
     }
   }, [isLoggedIn, navigate]);
 
-  if (!user) {
+  if (!isLoggedIn && !user) {
     return <p>Loading user info...</p>; 
   }
 
   return (
     <div style={{ maxWidth: "500px", margin: "2rem auto" }}>
       <h1>Dashboard</h1>
-        <p>Welcome, {user.username} 👋</p>
+        <p>Welcome, {user!.username} 👋</p>
+        <Logout />
     </div>
   );
 };
