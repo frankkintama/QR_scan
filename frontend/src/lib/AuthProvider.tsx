@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"
+console.log("Backend URL:", BACKEND_URL)
 
 interface User {
   id: string;
@@ -24,18 +25,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Fetch current user from backend
   const fetchCurrentUser = async () => {
+    console.log("Fetching current user..."); //check
     try {
       const res = await fetch(`${BACKEND_URL}/users/me`, {
         method: "GET",
         credentials: "include", // sends cookie
       });
+
+      console.log("/users/me status:", res.status); //check
+
       if (res.ok) {
         const data = await res.json();
+        console.log("User data:", data); // Add
         setUser(data);
       } else {
+        console.log("Failed to fetch user"); // Add
         setUser(null);
       }
-    } catch {
+    } catch (error) {
+      console.error("Error fetching user:", error); // Add
       setUser(null);
     } finally {
       setLoading(false);
@@ -48,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
  /*lấy email và password từ login, gọi request tới backend*/
  const login = async (email: string, password: string) => {
+    console.log("Login attempt for:", email); // Add
 
     const formData = new URLSearchParams();
     formData.append("username", email);
@@ -60,13 +69,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: formData,
     });
 
-    if (res.ok) {
+    console.log("Login response:", res.status); // Add
+
+    if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         const errorMessage = errorData.detail || "Invalid email or password";
         throw new Error(errorMessage);
     }
-
+    console.log("Login successful, fetching user..."); // Add
     await fetchCurrentUser();
+    console.log("Current user state:", user); // Add - but this might be stale
   };
 
 
