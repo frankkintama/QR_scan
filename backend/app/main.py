@@ -21,6 +21,8 @@ SECRET = os.getenv("SECRET")  # Key để mã hóa JWT token
 async def get_user_db():
     yield BeanieUserDatabase(User)
 
+
+
 # UserManager quản lý logic liên quan đến user
 class UserManager(BaseUserManager[User, PydanticObjectId]):
     reset_password_token_secret = SECRET  # Secret cho reset password token
@@ -59,7 +61,6 @@ class UserManager(BaseUserManager[User, PydanticObjectId]):
         # Nếu hash algorithm được update, lưu hash mới
         if updated_password_hash is not None:
             await self.user_db.update(user, {"hashed_password": updated_password_hash})
-
         return user  # Login thành công
 
     # Callback sau khi user đăng ký
@@ -82,6 +83,7 @@ class UserManager(BaseUserManager[User, PydanticObjectId]):
 async def get_user_manager(user_db: BeanieUserDatabase = Depends(get_user_db)):
     yield UserManager(user_db)
 
+
 # Cấu hình cookie để lưu JWT token
 cookie_transport = CookieTransport(
     cookie_name="fastapiuserauth",  # Tên cookie
@@ -92,6 +94,7 @@ cookie_transport = CookieTransport(
     cookie_path="/",                 # Cookie có hiệu lực trên toàn bộ domain
     cookie_domain="localhost"        # Domain của cookie
 )
+
 
 # Strategy tạo và verify JWT token
 def get_jwt_strategy() -> JWTStrategy:
@@ -104,11 +107,13 @@ auth_backend = AuthenticationBackend(
     get_strategy=get_jwt_strategy,   # Dùng JWT để mã hóa
 )
 
+
 # Khởi tạo FastAPIUsers - tạo tất cả routes authentication
 fastapi_users = FastAPIUsers[User, PydanticObjectId](
     get_user_manager,   # UserManager để quản lý logic
     [auth_backend],     # List các backend authentication 
 )
+
 
 # Lifespan context manager - chạy code khi app start/stop
 @asynccontextmanager
@@ -117,14 +122,17 @@ async def lifespan(app: FastAPI):
     yield            # Server đang chạy
     pass            # Cleanup khi server tắt 
 
+
 # Khởi tạo FastAPI app
 app = FastAPI(lifespan=lifespan)
+
 
 # Cấu hình CORS - cho phép frontend gọi API từ origin khác
 origins = [
     "http://localhost:3000",      
     "http://127.0.0.1:3000",      
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -133,7 +141,6 @@ app.add_middleware(
     allow_methods=["*"],          # Cho phép tất cả HTTP methods (GET, POST, etc.)
     allow_headers=["*"],          # Cho phép tất cả headers
 )
-
 
 
 # Auth routes: /auth/login, /auth/logout
@@ -156,6 +163,7 @@ app.include_router(
     prefix="/users", 
     tags=["users"]
 )
+
 
 # Tạo dependency để lấy current authenticated user
 current_user = fastapi_users.current_user()
