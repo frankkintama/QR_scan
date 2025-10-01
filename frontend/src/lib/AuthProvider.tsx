@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: formData,
     });
 
-    if (res.ok) {
+    if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         const errorMessage = errorData.detail || "Invalid email or password";
         throw new Error(errorMessage);
