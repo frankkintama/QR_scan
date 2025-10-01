@@ -4,30 +4,32 @@ from fastapi_users import schemas
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 
+# Model chính - đại diện cho document trong MongoDB
 class User(BeanieBaseUser, Document):
-    username: str
+    username: str  # Thêm field username vì Beanie mặc định chỉ cung cấp: 
+                   # id, email, hashed_password, 
+                   # is_active, is_superuser, is_verified
 
     class Settings:
-        name = "User"
-        email_collation = None
-
-# Pydantic models
-# BaseUser[uuid.UUID]:
-# id(UUID), email(str)
-# is_active(bool), is_superuser(bool), is_verified(bool)
+        name = "User"  # Tên collection trong MongoDB sẽ là "User"
+        email_collation = None  # Tắt collation - MongoDB sẽ phân biệt chữ hoa/thường
+                               
+# Schema cho response - khi trả data về cho client
+# dùng cho GET /users/me, /users/{id}, /users/
 class UserRead(schemas.BaseUser[PydanticObjectId]):
-    email: EmailStr
-    username: str
+    email: EmailStr  # Khai báo lại để đảm bảo thứ tự field
+    username: str    # Thêm username 
 
-# BaseUserCreate:
-# email(str), password(str)
+# Schema cho registration - validate data khi tạo user mới
+# dùng cho POST /auth/register
 class UserCreate(schemas.BaseUserCreate):
-    email: EmailStr
-    username: str
-    password: str
+    email: EmailStr   
+    username: str    
+    password: str     
+    
 
     class Config:
-        schema_extra = {
+        schema_extra = {  # Ví dụ hiển thị trong Swagger 
             "example": {
                 "email": "user@example.com",
                 "username": "myuser",
@@ -35,7 +37,8 @@ class UserCreate(schemas.BaseUserCreate):
             }
         }
 
-# BaseUserUpdate
-# email: Optional(str), password: Optional(str)
+# Schema cho update - cho phép cập nhật thông tin user
+# dùng cho PATCH /users/{id}
 class UserUpdate(schemas.BaseUserUpdate):
-    username: Optional[str] = None
+    username: Optional[str] = None  # Username không bắt buộc khi update
+    # BaseUserUpdate đã có: email (Optional), password (Optional)
