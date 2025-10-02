@@ -163,14 +163,3 @@ app.include_router(
     prefix="/users", 
     tags=["users"]
 )
-
-
-# Tạo dependency để lấy current authenticated user
-current_user = fastapi_users.current_user()
-
-# Custom endpoint - lấy thông tin user hiện tại
-@app.get("/users/me", response_model=UserRead, tags=["users"])
-async def get_me(user: User = Depends(current_user)):
-    """Get current authenticated user"""
-    return user
-
