@@ -28,7 +28,7 @@ class UserManager(BaseUserManager[User, PydanticObjectId]):
     reset_password_token_secret = SECRET  # Secret cho reset password token
     verification_token_secret = SECRET    # Secret cho email verification token
 
-    # Chuyển đổi string ID thành MongoDB ObjectId
+    # Chuyển đổi string ID từ JWT token thành MongoDB ObjectId
     def parse_id(self, user_id: str) -> PydanticObjectId:
         return PydanticObjectId(ObjectId(user_id))
 
