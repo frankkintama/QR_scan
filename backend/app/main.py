@@ -21,14 +21,16 @@ SECRET = os.getenv("SECRET")  # Key để mã hóa JWT token
 async def get_user_db():
     yield BeanieUserDatabase(User)
 
-
+#
+#
+#
 
 # UserManager quản lý logic liên quan đến user
 class UserManager(BaseUserManager[User, PydanticObjectId]):
     reset_password_token_secret = SECRET  # Secret cho reset password token
     verification_token_secret = SECRET    # Secret cho email verification token
 
-    # Chuyển đổi string ID từ JWT token thành MongoDB ObjectId
+    # Chuyển đổi string ID thành MongoDB ObjectId
     def parse_id(self, user_id: str) -> PydanticObjectId:
         return PydanticObjectId(ObjectId(user_id))
 
@@ -83,6 +85,9 @@ class UserManager(BaseUserManager[User, PydanticObjectId]):
 async def get_user_manager(user_db: BeanieUserDatabase = Depends(get_user_db)):
     yield UserManager(user_db)
 
+#
+#
+#
 
 # Cấu hình cookie để lưu JWT token
 cookie_transport = CookieTransport(
@@ -122,6 +127,9 @@ async def lifespan(app: FastAPI):
     yield            # Server đang chạy
     pass            # Cleanup khi server tắt 
 
+#
+#
+#
 
 # Khởi tạo FastAPI app
 app = FastAPI(lifespan=lifespan)
@@ -142,6 +150,9 @@ app.add_middleware(
     allow_headers=["*"],          # Cho phép tất cả headers
 )
 
+#
+#
+#
 
 # Auth routes: /auth/login, /auth/logout
 app.include_router(
