@@ -1,7 +1,7 @@
 from beanie import Document, PydanticObjectId
 from fastapi_users_db_beanie import BeanieBaseUser
 from fastapi_users import schemas
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, model_validator
 from typing import Optional
 
 # Model chính - đại diện cho document trong MongoDB
@@ -24,9 +24,16 @@ class UserRead(schemas.BaseUser[PydanticObjectId]):
 # dùng cho POST /auth/register
 class UserCreate(schemas.BaseUserCreate):
     email: EmailStr   
-    username: str    
+    username: str  = Field(..., min_length=5, max_length=20)  
     password: str     
-    
+    confirmPassword: str
+
+    @model_validator(mode="after")
+    def passwords_match(self) -> "UserCreate":
+        if self.password != self.confirmPassword:
+            raise ValueError("Mật khẩu không trùng")
+        return self
+
 
     class Config:
         schema_extra = {  # Ví dụ hiển thị trong Swagger 
