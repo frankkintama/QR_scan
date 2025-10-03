@@ -1,5 +1,6 @@
 import { useAuth } from "../lib/useAuth";
 import { useNavigate } from "react-router-dom";
+import "../App.css"
 
 export default function Logout() {
   const { logout } = useAuth();
@@ -13,11 +14,9 @@ export default function Logout() {
   return (
     <button
       onClick={handleLogout}
-      className="button"
+      className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed"
     >
         Đăng xuất
     </button>
   );
 }
-
-
